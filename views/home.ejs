@@ -1,0 +1,351 @@
+<% include ./partials/header.ejs %>
+
+  <style>
+    .content::-webkit-scrollbar,
+    .cardsContainer::-webkit-scrollbar {
+      display: none;
+    }
+
+    .truncate-lines-2 {
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      -webkit-line-clamp: 2;
+      /* Number of lines to show */
+      max-height: 3.6rem;
+      /* Calculate this based on your font size and line height */
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 16px;
+      /* Set width */
+      height: 16px;
+      /* Set height */
+      background-color: #4F46E5;
+      /* Set background color */
+      border-radius: 50%;
+      /* Set border radius to make it circular */
+      cursor: pointer;
+      /* Change cursor on hover */
+    }
+  </style>
+
+  <div id="main" class="bg-zinc-950 text-white fill-white h-[100vh] w-[100vw] flex overflow-hidden"
+    style="font-family: 'c1';">
+
+    <div id="left" class="h-full w-[23.5vw] p-2 flex flex-col gap-3">
+      <div id="leftTop"
+        class="h-[15%] w-full bg-gradient-to-br from-zinc-800 to-zinc-950 rounded-md px-8 flex flex-col gap-5 justify-center">
+        <div class="home flex gap-5 items-center">
+          <i class="ri-home-line text-xl"></i>
+          <h2>Home</h2>
+        </div>
+        <div class="search flex gap-5">
+          <i class="ri-search-line text-xl"></i>
+          <h2>Search</h2>
+        </div>
+      </div>
+
+      <div id="leftBottom" class="h-fit w-full bg-gradient-to-br from-zinc-950 to-zinc-900 rounded-md px-2 py-4">
+        <div id="library" class="flex justify-between items-center px-4">
+          <div class="flex gap-2">
+            <svg class="h-[1.4vw]" data-encore-id="icon" role="img" aria-hidden="true" viewBox="0 0 24 24"
+              class="Svg-sc-ytk21e-0 bneLcE">
+              <path
+                d="M3 22a1 1 0 0 1-1-1V3a1 1 0 0 1 2 0v18a1 1 0 0 1-1 1zM15.5 2.134A1 1 0 0 0 14 3v18a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V6.464a1 1 0 0 0-.5-.866l-6-3.464zM9 2a1 1 0 0 0-1 1v18a1 1 0 1 0 2 0V3a1 1 0 0 0-1-1z">
+              </path>
+            </svg>
+            <h3>Your Library</h3>
+          </div>
+          <div class="flex gap-2">
+            <i class="ri-add-line text-xl"></i>
+            <i class="ri-arrow-right-line text-xl"></i>
+          </div>
+        </div>
+        <div class="bg-gradient-to-bl from-zinc-700 to-zinc-800 p-4 rounded-md mt-8">
+          <h3>Create your first playlist</h3>
+          <h4 class="text-sm mt-2">It's easy, we'll help you</h4>
+          <button
+            class="bg-gradient-to-bl from-zinc-100 to-white text-zinc-900 px-4 py-2 rounded-full mt-6 text-sm">Create
+            playlist</button>
+        </div>
+      </div>
+
+    </div>
+
+    <div id="right" class="h-full w-[calc(100%-22.5vw)]  p-2">
+
+      <div id="innerRight"
+        class="h-full  px-5 w-full bg-gradient-to-bl from-zinc-950 to-zinc-800 rounded-md overflow-hidden">
+        <nav class="py-4  flex items-center justify-between">
+          <div id="navLeft" class="flex gap-2">
+            <div class="bg-zinc-900 w-8 h-8 flex justify-center items-center rounded-full"><i
+                class="ri-arrow-left-s-line text-2xl"></i></div>
+            <div class="bg-zinc-900 w-8 h-8 flex justify-center items-center rounded-full"><i
+                class="ri-arrow-right-s-line text-2xl"></i></div>
+          </div>
+          <div id="navRight" class="flex items-center">
+            <a href="/uploadSong" style="background-color: rgb(180, 155, 200);"
+              class="rounded-full text-zinc-800 h-[30px] w-[30px] text-center flex items-center justify-center border-4 border-black">
+              +</a>
+            <div style="background-color: rgb(180, 155, 200);"
+              class="rounded-full text-zinc-800 h-[30px] w-[30px] text-center flex items-center justify-center border-4 border-black">
+              Y</div>
+          </div>
+        </nav>
+        <div id="navP2" class="flex gap-1">
+          <div class="bg-zinc-700 w-fit px-4 py-[6px] rounded-full font-[100] text-xs">All</div>
+          <div class="bg-zinc-700 w-fit px-4 py-[6px] rounded-full font-[100] text-xs">Music</div>
+          <div class="bg-zinc-700 w-fit px-4 py-[6px] rounded-full font-[100] text-xs">Podcasts</div>
+        </div>
+        <div class="content h-full overflow-y-auto mt-3 pb-[30vh]">
+          <div class="container my-4">
+            <div class="text-2xl">Music</div>
+            <div class="cardsContainer flex mt-3 gap-4 overflow-x-auto">
+              <!-- sample card start -->
+              <% songs.forEach(song=>{ %>
+                <div data-file-name="<%=song.audio%>" onclick="play(document.querySelector('#playPauseBtn'))"
+                  class="card w-[10vw] flex-shrink-0">
+                  <div class="h-[10vw] w-[10vw] rounded-lg overflow-hidden"><img src="/uploads/<%=song.image%>" alt=""
+                      class="h-full w-full object-cover"></div>
+                  <div class="title my-1 text-sm truncate-lines-2">
+                    <%=song.songName%>
+                  </div>
+                  <div class="description text-zinc-400 text-xs truncate-lines-2">
+                    <%=song.artistName%>
+                  </div>
+                </div>
+                <% }) %>
+                  <!-- sample card end -->
+            </div>
+          </div>
+          
+          
+          
+        </div>
+      </div>
+      
+    </div>
+    
+    
+    
+    
+    
+    <div class="player fixed bottom-0 bg-black p-4 w-full flex items-center justify-between">
+      <div class="playerLeft flex gap-2 items-center">
+        <div class="h-[65px] w-[65px] overflow-hidden rounded-md"><img class="h-full w-full object-cover"
+          src="https://plus.unsplash.com/premium_photo-1670590820921-28e2a8b1150a?q=80&w=2018&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+          alt=""></div>
+          <div>
+            <div class="songName text-sm">Desi kalakar</div>
+            <div class="artistName text-xs text-zinc-500">Honey singh</div>
+          </div>
+        </div>
+        
+      <div
+      class="playerCenter flex flex-col justify-center items-center gap-2 absolute top-[50%] left-[50%] transform translate-x-[-50%] translate-y-[-50%]">
+      <div class="controller flex gap-2 text-2xl">
+        <i id="skipLeft" class="ri-skip-left-fill"></i>
+        <div class=" bg-white text-black h-[30px] w-[30px] text-center rounded-full flex items-center justify-center">
+          <i id="playPauseBtn" onclick="playPause(this)" class="ri-play-fill ml-1"></i>
+        </div>
+        <i id="skipRight" class="ri-skip-right-fill"></i>
+      </div>
+      <div class="controller2 flex items-center justify-center gap-4">
+        <span class="text-xs text-zinc-400">0:10</span>
+        
+        <div class="progressBarOutLine w-[300px] h-1 bg-zinc-700 relative">
+          <div class="currentPositionLine w-[300px] h-full overflow-hidden">
+            <div class="currentPositionLineInside w-[300px] h-full bg-zinc-400 relative left-[-100%]"></div>
+          </div>
+          <div id="draggableElement"
+          class="currentPositionDot w-[12px] cursor-pointer h-[12px] bg-green-500 rounded-full absolute left-[0%] top-[50%] translate-y-[-50%] translate-x-[-50%]">
+        </div>
+      </div>
+      
+      <span class="text-xs text-zinc-400">3:30</span>
+    </div>
+  </div>
+  
+  
+  <div class="playerRight">
+    <div class="audio-controls">
+      <!-- <button id="playPauseBtn">&#9658;</button> -->
+      <!-- <input class="w-full h-5 bg-gray-300 rounded-full appearance-none" type="range" id="volumeControl" min="0" max="100" value="100"> -->
+    </div>
+  </div>
+  
+</div>
+
+
+<div hidden class="audio-player">
+  <audio id="audioPlayer" controls>
+    Your browser does not support the audio element.
+  </audio>
+</div>
+</div>
+
+
+
+<script>
+  
+  const audioPlayer = document.getElementById('audioPlayer');
+  
+  const customProgressBar = document.querySelector('.currentPositionLineInside'); // Select your custom progress bar element
+  
+    // Add event listener to update the position of the custom bar when the time updates
+    audioPlayer.addEventListener('timeupdate', function () {
+      const currentTime = audioPlayer.currentTime;
+      const duration = audioPlayer.duration;
+
+      // Calculate the percentage of progress
+      const progress = (currentTime / duration) * 100;
+
+      // Update the width of the custom progress bar
+      // customProgressBar.style.width = progress + '%';
+
+      // Update the position of the draggable element
+      draggableElement.style.left = progress + '%';
+      followDot(draggableElement)
+    });
+
+
+
+
+    // Get draggable element and progress bar elements
+    // Get draggable element and progress bar elements
+    const draggableElement = document.getElementById('draggableElement');
+    const progressBar = document.querySelector('.progressBarOutLine');
+
+    // Function to update position
+    function updatePosition(x) {
+      const percentage = draggableElement.style.left
+      audioPlayer.currentTime = Number(percentage.slice(0, -1)) * audioPlayer.duration / 100;
+    }
+
+    // Event listener for mouse down on draggable element
+    draggableElement.addEventListener('mousedown', (e) => {
+      e.preventDefault(); // Prevent default dragging behavior
+      window.addEventListener('mousemove', onMouseMove);
+      window.addEventListener('mouseup', onMouseUp);
+    });
+
+    // Function to handle mouse move event
+    function onMouseMove(e) {
+      updatePosition(e.pageX);
+    }
+
+    // Function to handle mouse up event
+    function onMouseUp() {
+      window.removeEventListener('mousemove', onMouseMove);
+      window.removeEventListener('mouseup', onMouseUp);
+    }
+
+
+
+    var skipRight = document.querySelector('#skipRight')
+    skipRight.addEventListener('click',function(){
+      const percentage = Number(draggableElement.style.left.slice(0, -1)) 
+      audioPlayer.currentTime = (percentage+3) * audioPlayer.duration / 100;
+    })
+
+    var skipLeft = document.querySelector('#skipLeft')
+    skipLeft.addEventListener('click',function(){
+      const percentage = Number(draggableElement.style.left.slice(0, -1)) 
+      audioPlayer.currentTime = (percentage-3) * audioPlayer.duration / 100;
+    })
+
+
+
+
+
+
+
+
+
+
+
+
+    document.querySelectorAll('.card').forEach(card => {
+      card.addEventListener('click', () => {
+        audioPlayer.src = `/stream/${card.dataset.fileName}`;
+        audioPlayer.play();
+      })
+    })
+
+
+    const playPauseBtn = document.getElementById('playPauseBtn');
+
+    playPauseBtn.addEventListener('click', () => {
+      if (audioPlayer.paused) {
+        audioPlayer.play();
+      } else {
+        audioPlayer.pause();
+      }
+    });
+
+    function playPause(elem) {
+      elem.classList.toggle('ri-play-fill')
+      elem.classList.toggle('ri-pause-mini-line')
+      elem.classList.toggle('ml-1')
+    }
+    function play(elem) {
+      elem.classList.remove('ri-play-fill')
+      elem.classList.add('ri-pause-mini-line')
+      elem.classList.remove('ml-1')
+    }
+
+    // Update volume based on user input
+    // const volumeControl = document.getElementById('volumeControl');
+    // volumeControl.addEventListener('input', () => {
+    //   audioPlayer.volume = volumeControl.value / 100;
+    // });
+
+
+
+
+    function makeDraggable(element) {
+      let isDragging = false;
+
+      // Function to handle mouse down event
+      function handleMouseDown(event) {
+        isDragging = true;
+        document.addEventListener('mousemove', handleMouseMove);
+        document.addEventListener('mouseup', handleMouseUp);
+      }
+
+      // Function to handle mouse move event
+      function handleMouseMove(event) {
+        if (!isDragging) return;
+        const progressBarRect = element.parentElement.getBoundingClientRect();
+        const newPosition = event.clientX - progressBarRect.left - element.offsetWidth / 2;
+        const newPositionPercent = Math.min(Math.max(0, newPosition / progressBarRect.width), 1) * 100;
+        element.style.left = newPositionPercent + '%';
+      }
+
+      // Function to handle mouse up event
+      function handleMouseUp() {
+        isDragging = false;
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', handleMouseUp);
+        followDot(element)
+      }
+
+      // Add event listener to the draggable element
+      element.addEventListener('mousedown', handleMouseDown);
+    }
+
+    // Get the draggable element
+
+    // Make the element draggable within the progress bar
+    makeDraggable(draggableElement);
+
+
+    function followDot(elem) {
+      document.querySelector('.currentPositionLineInside').style.left = -100 + Number(elem.style.left.slice(0, -1)) + '%'
+    }
+  </script>
+
+  <% include ./partials/footer.ejs %>

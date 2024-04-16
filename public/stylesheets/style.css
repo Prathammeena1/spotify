@@ -1,0 +1,28 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+@font-face {
+    font-family: 'c1';
+    src: url('./fonts/CircularSp-Bold-fe1cfc14b7498b187c78fa72fb72d148.ttf');
+}
+@font-face {
+    font-family: 'c2';
+    src: url('./fonts/CircularSp-Book-4eaffdf96f4c6f984686e93d5d9cb325.ttf');
+}
+@font-face {
+    font-family: 'c3';
+    src: url('./fonts/CircularSpotify-UI-Latin-OS2v3-Black.ttf');
+}
+@font-face {
+    font-family: 'c4';
+    src: url('./fonts/CircularSpotify-UI-Latin-OS2v3-Bold.ttf');
+}
+@font-face {
+    font-family: 'c5';
+    src: url('./fonts/CircularSpotify-UI-Latin-OS2v3-Book.ttf');
+}
+@font-face {
+    font-family: 'c6';
+    src: url('./fonts/CircularSpTitle-Bold-2fbf72b606d7f0b0f771ea4956a8b4d6.ttf');
+}
