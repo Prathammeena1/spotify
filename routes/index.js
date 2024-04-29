@@ -132,7 +132,7 @@ router.get('/deletePlaylist/:playlistId',async(req,res)=>{
 })
 
 router.get('/find/playlist/:playlistId',async(req,res)=>{
-  const playlist = await playlistModel.findOne({_id:req.params.playlistId})
+  const playlist = await playlistModel.findOne({_id:req.params.playlistId}).populate('music')
   res.json(playlist);
 })
 
@@ -155,9 +155,20 @@ router.get('/searchSong/:songName', async (req, res) => {
 router.post('/addSongToPlaylist', async (req, res) => {
   const {songId,playlistId} = req.body
   const playlist = await playlistModel.findOne({_id:playlistId})
-  playlist.music.push(songId)
+  if(playlist.music.indexOf(songId) == -1){
+    playlist.music.push(songId)
+    await playlist.save()
+    const playlist1 = await playlistModel.findOne({_id:playlistId}).populate('music')
+    res.json(playlist1)
+  }
+});
+
+router.get('/deleteSongFromPlaylist/:playlistId/:songId', async (req, res) => {
+  const playlist = await playlistModel.findOne({_id:req.params.playlistId});
+  const index = playlist.music.indexOf(req.params.songId);
+  playlist.music.splice(index,1);
   await playlist.save()
-  res.json(playlist)
+  res.redirect('back')
 });
 
 
