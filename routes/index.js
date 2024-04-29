@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const SpotifyWebApi = require('spotify-web-api-node');
 const session = require('express-session')
 const passport = require('passport')
 const localStrategy = require('passport-local')
@@ -11,6 +10,7 @@ const musicModel = require('./music.js')
 const fs = require('fs')
 const path = require('path')
 const playlistModel = require('./playlist.js')
+const crypto = require('crypto');
 
 
 passport.use(new GoogleStrategy({
@@ -113,8 +113,9 @@ router.post('/upload', isLoggedIn, upload.fields([
 
 router.get('/createPlaylist',async (req,res,next)=>{
   const loggedInUser = await userModel.findOne({_id:req.user.id})
+  const random = crypto.randomBytes(2).toString('hex')
   const newPlaylist = await playlistModel.create({
-    name:'New playlist'
+    name:`New playlist #${random}`
   })
   await loggedInUser.playlists.push(newPlaylist._id)
   await loggedInUser.save()
@@ -129,6 +130,35 @@ router.get('/deletePlaylist/:playlistId',async(req,res)=>{
   await loggedInUser.save()
   res.redirect('back')
 })
+
+router.get('/find/playlist/:playlistId',async(req,res)=>{
+  const playlist = await playlistModel.findOne({_id:req.params.playlistId})
+  res.json(playlist);
+})
+
+router.get('/searchSong/:songName', async (req, res) => {
+  const { songName } = req.params;
+  try {
+    // Define your regex pattern
+    const regexPattern = new RegExp(songName, 'i'); // 'i' flag for case-insensitive matching
+
+    // Find documents where the song name matches the regex pattern
+    const songs = await musicModel.find({ songName: regexPattern });
+
+    res.json({ songs });
+  } catch (error) {
+    console.error('Error searching for songs:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+router.post('/addSongToPlaylist', async (req, res) => {
+  const {songId,playlistId} = req.body
+  const playlist = await playlistModel.findOne({_id:playlistId})
+  playlist.music.push(songId)
+  await playlist.save()
+  res.json(playlist)
+});
 
 
 

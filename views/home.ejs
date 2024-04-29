@@ -48,17 +48,60 @@
       cursor: pointer;
     }
 
-    .playlist:hover .deletePlaylist{
-      opacity:1;
+    .playlist:hover .deletePlaylist {
+      opacity: 1;
       transition: all;
       transition-duration: .8s;
       transition-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
     }
-    .playlist:hover{
+
+    .playlist:hover {
       scale: 1.03;
       transition: all;
       transition-duration: .4s;
       transition-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+    }
+
+    .songs:hover .deleteSong {
+      opacity: 1;
+      transition: all;
+      transition-duration: .8s;
+      transition-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+    }
+
+    .songs:hover {
+      scale: 1.01;
+      transition: all;
+      transition-duration: .4s;
+      transition-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+    }
+
+    .searchedSong:hover .addSong{
+      opacity: 1;
+      transition: all;
+      transition-duration: .8s;
+      transition-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+    }
+
+    .searchedSong:hover{
+      scale: 1.02;
+      transition: all;
+      transition-duration: .4s;
+      transition-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+    }
+
+   
+    .addSong:hover{
+      transition: all linear .2s;
+      cursor: pointer;
+      color: #22c55ebc;
+    }
+
+    .close:hover{
+      transition: all linear .2s;
+      scale: 1.3;
+      cursor: pointer;
+      color: #22c55ebc;
     }
   </style>
 
@@ -96,21 +139,26 @@
         </div>
         <div class="bg-gradient-to-bl from-zinc-700 to-zinc-800 px-2 py-1 rounded-md mt-6">
           <% if(loggedInUser.playlists.length===0 ){ %>
-            <h3>Create your first playlist</h3>
-            <h4 class="text-sm mt-2 mb-4">It's easy, we'll help you</h4>
-            <a href="/createPlaylist" id="createPlaylist"
-              class="bg-gradient-to-bl from-zinc-100 to-white text-zinc-900 px-4 py-2 rounded-full text-sm">Create
-              playlist</a>
-          <% }else{ %>
-            <% loggedInUser.playlists.reverse().forEach(playlist=>{ %>
-              <div class="playlist bg-gradient-to-bl from-zinc-900 to-zinc-950 p-2 rounded-md flex items-center justify-between my-1">
-                <div class="flex items-center gap-2">
-                  <div class="playlistImg h-8 w-8">
-                    <img class="h-full w-full object-cover" src="https://imgs.search.brave.com/WsLesgMkeU00Gh7bDoL-D0UFvRK7egnCChqa4d9Q2Gk/rs:fit:860:0:0/g:ce/aHR0cHM6Ly9jZG40/Lmljb25maW5kZXIu/Y29tL2RhdGEvaWNv/bnMvbXVzaWMtdWkt/c29saWQtMjRweC8y/NC9wbGF5bGlzdF9s/aXN0X211c2ljLTIt/MTI4LnBuZw" alt="">
-                  </div>
-                  <div>
-                    <div class="playlistName text-sm text-zinc-400"><%=playlist.name%></div>
-                    <div class="username text-xs capitalize text-zinc-400">Playlist - <%=loggedInUser.name.split(' ')[0] %></div>
+            <div class="py-4">
+              <h3>Create your first playlist</h3>
+              <h4 class="text-sm mb-4">It's easy, we'll help you</h4>
+              <a href="/createPlaylist" id="createPlaylist"
+                class="bg-gradient-to-bl from-zinc-100 to-white text-zinc-900 px-4 py-2 rounded-full text-sm">Create
+                playlist</a>
+            </div>
+            <% }else{ %>
+              <% loggedInUser.playlists.reverse().forEach(playlist=>{ %>
+                <div data-playlist-id="<%=playlist._id%>"
+                  class="playlist bg-gradient-to-bl from-zinc-900 to-zinc-950 p-2 rounded-md flex items-center justify-between my-1">
+                  <div class="flex items-center gap-2">
+                    <div class="playlistImg h-8 w-8">
+                      <img class="h-full w-full object-cover" src="/images/<%=playlist.image%>" alt="">
+                    </div>
+                    <div>
+                      <div class="playlistName text-sm text-zinc-400">
+                        <%=playlist.name%>
+                      </div>
+                      <div class="username text-xs capitalize text-zinc-400">Playlist - <%=loggedInUser.name.split(' ')[0] %></div>
                   </div>
                 </div>
                 <div>
@@ -127,24 +175,25 @@
     <div id="right" class="h-full w-[calc(100%-22.5vw)]  p-2">
 
       <div id="innerRight"
-        class="h-full  px-5 w-full bg-gradient-to-bl from-zinc-950 to-zinc-800 rounded-md overflow-hidden">
-        <nav class="py-4  flex items-center justify-between">
+        class="h-full w-full bg-gradient-to-bl from-zinc-950 to-zinc-800 rounded-md overflow-hidden">
+        <nav class="py-4 px-5 flex items-center justify-between">
           <div id="navLeft" class="flex gap-2">
             <div class="bg-zinc-900 w-8 h-8 flex justify-center items-center rounded-full"><i
-                class="ri-arrow-left-s-line text-2xl"></i></div>
-            <div class="bg-zinc-900 w-8 h-8 flex justify-center items-center rounded-full"><i
+              class="ri-arrow-left-s-line text-2xl"></i></div>
+              <div class="bg-zinc-900 w-8 h-8 flex justify-center items-center rounded-full"><i
                 class="ri-arrow-right-s-line text-2xl"></i></div>
-          </div>
-          <div id="navRight" class="flex items-center">
-            <a href="/uploadSong" style="background-color: rgb(180, 155, 200);"
-              class="rounded-full text-zinc-800 h-[30px] w-[30px] text-center flex items-center justify-center border-4 border-black">
-              +</a>
-            <div style="background-color: rgb(180, 155, 200);"
-              class="rounded-full text-zinc-800 h-[30px] w-[30px] text-center uppercase flex items-center justify-center border-4 border-black">
-              <%=loggedInUser.name[0]%></div>
-          </div>
+              </div>
+              <div id="navRight" class="flex items-center">
+                <a href="/uploadSong" style="background-color: rgb(180, 155, 200);"
+                class="rounded-full text-zinc-800 h-[30px] w-[30px] text-center flex items-center justify-center border-4 border-black">
+                +</a>
+                <div style="background-color: rgb(180, 155, 200);"
+                class="rounded-full text-zinc-800 h-[30px] w-[30px] text-center uppercase flex items-center justify-center border-4 border-black">
+                <%=loggedInUser.name[0]%></div>
+              </div>
         </nav>
-        <div id="navP2" class="flex gap-1">
+        <div class="showHome px-5">
+            <div id="navP2" class="flex gap-1">
           <div class="bg-zinc-700 w-fit px-4 py-[6px] rounded-full font-[100] text-xs">All</div>
           <div class="bg-zinc-700 w-fit px-4 py-[6px] rounded-full font-[100] text-xs">Music</div>
           <div class="bg-zinc-700 w-fit px-4 py-[6px] rounded-full font-[100] text-xs">Podcasts</div>
@@ -155,25 +204,60 @@
             <div class="cardsContainer flex mt-3 gap-4 overflow-x-auto">
               <!-- sample card start -->
               <% songs.forEach(song=>{ %>
-                <div data-file-name="<%=song.audio%>" onclick="play(document.querySelector('#playPauseBtn'))"
-                  class="card w-[10vw] flex-shrink-0">
-                  <div class="h-[10vw] w-[10vw] rounded-lg overflow-hidden"><img src="/uploads/<%=song.image%>" alt=""
-                      class="songImg h-full w-full object-cover"></div>
-                  <div class="songName my-1 text-sm truncate-lines-2">
-                    <%=song.songName%>
+                <div data-file-name="<%=song.audio%>" onclick="play(document.querySelector(' #playPauseBtn'))"
+                          class="card w-[10vw] flex-shrink-0">
+                          <div class="h-[10vw] w-[10vw] rounded-lg overflow-hidden"><img src="/uploads/<%=song.image%>"
+                              alt="" class="songImg h-full w-full object-cover"></div>
+                          <div class="songName my-1 text-sm truncate-lines-2">
+                            <%=song.songName%>
+                          </div>
+                          <div class="artistName text-zinc-400 text-xs truncate-lines-2">
+                            <%=song.artistName%>
+                          </div>
+                      </div>
+                      <% }) %>
+                        <!-- sample card end -->
+                    </div>
                   </div>
-                  <div class="artistName text-zinc-400 text-xs truncate-lines-2">
-                    <%=song.artistName%>
-                  </div>
+
+
+
                 </div>
-                <% }) %>
-                  <!-- sample card end -->
+        </div>
+
+        <div hidden class="showPlayListDets py-5 ">
+          <div class="showPlayListDetsTop flex items-center gap-2">
+            <div class="showPlayListDetsTopLeft h-40 w-40">
+              <img src="">
+            </div>
+            <div class="showPlayListDetsTopLeft flex flex-col gap-3">
+              <div class="showPlayListDetsTopLeftT text-sm text-zinc-300 capitalize">playlist</div>
+              <div class="showPlayListDetsTopLeftC text-5xl">playlist name</div>
+              <div class="showPlayListDetsTopLeftB text-sm text-zinc-300 capitalize"></div>
             </div>
           </div>
+          <div class="showPlayListDetsBottom px-5 py-2 bg-gradient-to-bl from-zinc-700 to-zinc-950 w-full min-h-[56vh]">
+            <div class="playListNav">
+              <i class="ri-add-line text-3xl"></i>
+            </div>
+            <div class="playlistContent">
 
-
-
+            </div>
+          </div>
         </div>
+
+        <div class="searchSongForPlaylist py-1 px-2 absolute top-[50vh] left-[50vw] translate-x-[-50%] translate-y-[-50%] backdrop-blur-sm rounded-e-md bg-gradient-to-bl from-zinc-600/[.8] to-zinc-950/[.8] h-[70vh] w-[40vw]">
+          <div class="flex items-center justify-center gap-1">
+            <input type="text" oninput="searchSong(this)" class="w-[90%] bg-gradient-to-tl from-zinc-800 to-zinc-950 py-1 px-3 rounded-md border-[1px] border-zinc-500">
+            <i class="close ri-close-line text-4xl"></i>
+          </div>
+          <div class="showSearchSong">
+            
+          </div>
+        </div>
+
+
+
       </div>
 
     </div>
@@ -242,82 +326,4 @@
 
 
   <script src="/javascripts/player.js"></script>
-
-  <script>
-
-
-    function volumeAdjust() {
-      const volumeSlider = document.getElementById('volumeSlider');
-      const volumePercentage = document.getElementById('volumePercentage');
-
-      volumeSlider.addEventListener('input', function () {
-        const volumeValue = volumeSlider.value;
-        // Set CSS custom property for value
-        volumePercentage.textContent = `${volumeValue}%`;
-        volumeSlider.style.setProperty('--value', `${volumeValue}%`); // Divide by 100 to get a value between 0 and 1
-
-        // Set thumb color to transparent if value is 0
-        if (volumeValue == 0) {
-          volumeSlider.style.setProperty('--thumb-color', 'transparent');
-        } else {
-          volumeSlider.style.removeProperty('--thumb-color');
-        }
-        audioPlayer.volume = volumeSlider.value / 100;
-
-      });
-      volumeSlider.addEventListener('keydown', function (e) {
-        if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
-          e.preventDefault();
-        }
-      });
-
-      window.addEventListener('keydown', function (e) {
-        if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-          e.preventDefault();
-          const step = 2; // Adjust volume by 1%
-          let volumeValue = parseInt(volumeSlider.value);
-          if (e.key === 'ArrowUp') {
-            volumeValue = Math.min(volumeValue + step, 100);
-          } else {
-            volumeValue = Math.max(volumeValue - step, 0);
-          }
-          volumeSlider.value = volumeValue;
-          updateVolume(volumeValue);
-        }
-      });
-      function updateVolume(volumeValue) {
-        // Here you can update the volume of your audio player
-        // For demonstration, I'm logging the volume value
-        audioPlayer.volume = volumeValue / 100
-      }
-
-
-      audioPlayer.addEventListener('volumechange', function () {
-        const volumeValue = Math.round(audioPlayer.volume * 100); // Convert volume to percentage
-        volumeSlider.value = volumeValue;
-
-
-        volumePercentage.textContent = `${volumeValue}%`;
-        volumeSlider.style.setProperty('--value', `${volumeValue}%`); // Divide by 100 to get a value between 0 and 1
-
-        // Set thumb color to transparent if value is 0
-        if (volumeValue == 0) {
-          volumeSlider.style.setProperty('--thumb-color', 'transparent');
-        } else {
-          volumeSlider.style.removeProperty('--thumb-color');
-        }
-
-
-      });
-    }
-
-
-
-
-
-
-
-
-  </script>
-
   <% include ./partials/footer.ejs %>
