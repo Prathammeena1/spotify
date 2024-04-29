@@ -97,11 +97,17 @@ function playPause() {
             pause(playPauseBtn)
         }
     });
-}
+} 
 
 window.addEventListener('keydown', e => {
     if (e.code === 'Space') {
-        playPauseBtn.click()
+        if (audioPlayer.paused) {
+            audioPlayer.play();
+            play(playPauseBtn)
+        } else {
+            audioPlayer.pause();
+            pause(playPauseBtn)
+        }
     }
     if (e.code === 'ArrowRight') {
         skipRight.click()

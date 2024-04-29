@@ -47,11 +47,24 @@
       background-color: transparent;
       cursor: pointer;
     }
+
+    .playlist:hover .deletePlaylist{
+      opacity:1;
+      transition: all;
+      transition-duration: .8s;
+      transition-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+    }
+    .playlist:hover{
+      scale: 1.03;
+      transition: all;
+      transition-duration: .4s;
+      transition-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+    }
   </style>
 
   <div id="main" class="bg-zinc-950 text-white fill-white h-[100vh] w-[100vw] flex overflow-hidden"
     style="font-family: 'c1';">
-
+    <!-- left -->
     <div id="left" class="h-full w-[23.5vw] p-2 flex flex-col gap-3">
       <div id="leftTop"
         class="h-[15%] w-full bg-gradient-to-br from-zinc-800 to-zinc-950 rounded-md px-8 flex flex-col gap-5 justify-center">
@@ -77,21 +90,40 @@
             <h3>Your Library</h3>
           </div>
           <div class="flex gap-2">
-            <i class="ri-add-line text-xl"></i>
+            <a href="/createPlaylist"><i class="ri-add-line text-xl"></i></a>
             <i class="ri-arrow-right-line text-xl"></i>
           </div>
         </div>
-        <div class="bg-gradient-to-bl from-zinc-700 to-zinc-800 p-4 rounded-md mt-8">
-          <h3>Create your first playlist</h3>
-          <h4 class="text-sm mt-2">It's easy, we'll help you</h4>
-          <button
-            class="bg-gradient-to-bl from-zinc-100 to-white text-zinc-900 px-4 py-2 rounded-full mt-6 text-sm">Create
-            playlist</button>
+        <div class="bg-gradient-to-bl from-zinc-700 to-zinc-800 px-2 py-1 rounded-md mt-6">
+          <% if(loggedInUser.playlists.length===0 ){ %>
+            <h3>Create your first playlist</h3>
+            <h4 class="text-sm mt-2 mb-4">It's easy, we'll help you</h4>
+            <a href="/createPlaylist" id="createPlaylist"
+              class="bg-gradient-to-bl from-zinc-100 to-white text-zinc-900 px-4 py-2 rounded-full text-sm">Create
+              playlist</a>
+          <% }else{ %>
+            <% loggedInUser.playlists.reverse().forEach(playlist=>{ %>
+              <div class="playlist bg-gradient-to-bl from-zinc-900 to-zinc-950 p-2 rounded-md flex items-center justify-between my-1">
+                <div class="flex items-center gap-2">
+                  <div class="playlistImg h-8 w-8">
+                    <img class="h-full w-full object-cover" src="https://imgs.search.brave.com/WsLesgMkeU00Gh7bDoL-D0UFvRK7egnCChqa4d9Q2Gk/rs:fit:860:0:0/g:ce/aHR0cHM6Ly9jZG40/Lmljb25maW5kZXIu/Y29tL2RhdGEvaWNv/bnMvbXVzaWMtdWkt/c29saWQtMjRweC8y/NC9wbGF5bGlzdF9s/aXN0X211c2ljLTIt/MTI4LnBuZw" alt="">
+                  </div>
+                  <div>
+                    <div class="playlistName text-sm text-zinc-400"><%=playlist.name%></div>
+                    <div class="username text-xs capitalize text-zinc-400">Playlist - <%=loggedInUser.name.split(' ')[0] %></div>
+                  </div>
+                </div>
+                <div>
+                  <a class="deletePlaylist opacity-0" href="/deletePlaylist/<%=playlist._id%>"><i class="ri-delete-bin-line text-zinc-400"></i></a>
+                </div>
+              </div>
+            <% }) %>
+          <% } %>
         </div>
       </div>
 
     </div>
-
+    <!-- right -->
     <div id="right" class="h-full w-[calc(100%-22.5vw)]  p-2">
 
       <div id="innerRight"
@@ -108,8 +140,8 @@
               class="rounded-full text-zinc-800 h-[30px] w-[30px] text-center flex items-center justify-center border-4 border-black">
               +</a>
             <div style="background-color: rgb(180, 155, 200);"
-              class="rounded-full text-zinc-800 h-[30px] w-[30px] text-center flex items-center justify-center border-4 border-black">
-              Y</div>
+              class="rounded-full text-zinc-800 h-[30px] w-[30px] text-center uppercase flex items-center justify-center border-4 border-black">
+              <%=loggedInUser.name[0]%></div>
           </div>
         </nav>
         <div id="navP2" class="flex gap-1">
@@ -145,11 +177,7 @@
       </div>
 
     </div>
-
-
-
-
-
+    <!-- user player -->
     <div class="player fixed bottom-0 bg-black p-4 px-6 w-full flex items-center justify-between">
       <div class="playerLeft flex gap-2 items-center">
         <div class="h-[65px] w-[65px] overflow-hidden rounded-md"><img id="currentSongImg"
@@ -193,90 +221,100 @@
         <div class="rounded-lg shadow-md flex items-center gap-2">
           <input id="volumeSlider" type="range" min="0" value="100" max="100"
             class="w-full h-1 bg-zinc-700 appearance-none overflow-hidden">
-          <span id="volumePercentage" class="text-gray-600">100%</span>
+          <span id="volumePercentage" class="text-zinc-400">100%</span>
         </div>
 
 
       </div>
 
     </div>
-
-
+    <!-- real player -->
     <div hidden class="audio-player">
       <audio id="audioPlayer" controls>
         Your browser does not support the audio element.
       </audio>
     </div>
+
+
+
+
   </div>
 
 
   <script src="/javascripts/player.js"></script>
 
   <script>
-    const volumeSlider = document.getElementById('volumeSlider');
-    const volumePercentage = document.getElementById('volumePercentage');
 
-    volumeSlider.addEventListener('input', function () {
-      const volumeValue = volumeSlider.value;
-      // Set CSS custom property for value
-      volumePercentage.textContent = `${volumeValue}%`;
-      volumeSlider.style.setProperty('--value', `${volumeValue}%`); // Divide by 100 to get a value between 0 and 1
 
-      // Set thumb color to transparent if value is 0
-      if (volumeValue == 0) {
-        volumeSlider.style.setProperty('--thumb-color', 'transparent');
-      } else {
-        volumeSlider.style.removeProperty('--thumb-color');
-      }
-      audioPlayer.volume = volumeSlider.value / 100;
+    function volumeAdjust() {
+      const volumeSlider = document.getElementById('volumeSlider');
+      const volumePercentage = document.getElementById('volumePercentage');
 
-    });
-    volumeSlider.addEventListener('keydown', function (e) {
-      if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
-        e.preventDefault();
-      }
-    });
+      volumeSlider.addEventListener('input', function () {
+        const volumeValue = volumeSlider.value;
+        // Set CSS custom property for value
+        volumePercentage.textContent = `${volumeValue}%`;
+        volumeSlider.style.setProperty('--value', `${volumeValue}%`); // Divide by 100 to get a value between 0 and 1
 
-    window.addEventListener('keydown', function(e) {
-      if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-        e.preventDefault();
-        const step = 2; // Adjust volume by 1%
-        let volumeValue = parseInt(volumeSlider.value);
-        if (e.key === 'ArrowUp') {
-          volumeValue = Math.min(volumeValue + step, 100);
+        // Set thumb color to transparent if value is 0
+        if (volumeValue == 0) {
+          volumeSlider.style.setProperty('--thumb-color', 'transparent');
         } else {
-          volumeValue = Math.max(volumeValue - step, 0);
+          volumeSlider.style.removeProperty('--thumb-color');
         }
-        volumeSlider.value = volumeValue;
-        updateVolume(volumeValue);
+        audioPlayer.volume = volumeSlider.value / 100;
+
+      });
+      volumeSlider.addEventListener('keydown', function (e) {
+        if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+          e.preventDefault();
+        }
+      });
+
+      window.addEventListener('keydown', function (e) {
+        if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+          e.preventDefault();
+          const step = 2; // Adjust volume by 1%
+          let volumeValue = parseInt(volumeSlider.value);
+          if (e.key === 'ArrowUp') {
+            volumeValue = Math.min(volumeValue + step, 100);
+          } else {
+            volumeValue = Math.max(volumeValue - step, 0);
+          }
+          volumeSlider.value = volumeValue;
+          updateVolume(volumeValue);
+        }
+      });
+      function updateVolume(volumeValue) {
+        // Here you can update the volume of your audio player
+        // For demonstration, I'm logging the volume value
+        audioPlayer.volume = volumeValue / 100
       }
-    });
-    function updateVolume(volumeValue) {
-      // Here you can update the volume of your audio player
-      // For demonstration, I'm logging the volume value
-      // console.log('Volume:', volumeValue);
-      console.log(volumeValue)
-      audioPlayer.volume = volumeValue/100
+
+
+      audioPlayer.addEventListener('volumechange', function () {
+        const volumeValue = Math.round(audioPlayer.volume * 100); // Convert volume to percentage
+        volumeSlider.value = volumeValue;
+
+
+        volumePercentage.textContent = `${volumeValue}%`;
+        volumeSlider.style.setProperty('--value', `${volumeValue}%`); // Divide by 100 to get a value between 0 and 1
+
+        // Set thumb color to transparent if value is 0
+        if (volumeValue == 0) {
+          volumeSlider.style.setProperty('--thumb-color', 'transparent');
+        } else {
+          volumeSlider.style.removeProperty('--thumb-color');
+        }
+
+
+      });
     }
 
 
-    audioPlayer.addEventListener('volumechange', function() {
-      const volumeValue = Math.round(audioPlayer.volume * 100); // Convert volume to percentage
-      volumeSlider.value = volumeValue;
 
 
-      volumePercentage.textContent = `${volumeValue}%`;
-      volumeSlider.style.setProperty('--value', `${volumeValue}%`); // Divide by 100 to get a value between 0 and 1
 
-      // Set thumb color to transparent if value is 0
-      if (volumeValue == 0) {
-        volumeSlider.style.setProperty('--thumb-color', 'transparent');
-      } else {
-        volumeSlider.style.removeProperty('--thumb-color');
-      }
-
-
-    });
 
 
 

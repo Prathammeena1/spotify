@@ -10,6 +10,7 @@ const upload = require('./multerImage.js')
 const musicModel = require('./music.js')
 const fs = require('fs')
 const path = require('path')
+const playlistModel = require('./playlist.js')
 
 
 passport.use(new GoogleStrategy({
@@ -48,9 +49,9 @@ router.get('/login', (req, res) => {
 });
 
 router.get('/home', isLoggedIn, async (req, res) => {
-  const loggedInUser = await userModel.findOne({_id:req.user.id})
+  const loggedInUser = await userModel.findOne({_id:req.user.id}).populate('playlists')
   const songs  = await musicModel.find();
-  res.render('home.ejs',{songs})
+  res.render('home.ejs',{loggedInUser,songs})
 });
 
 router.get('/uploadSong', isLoggedIn, async (req, res) => {
@@ -109,6 +110,25 @@ router.post('/upload', isLoggedIn, upload.fields([
 
 })
 
+
+router.get('/createPlaylist',async (req,res,next)=>{
+  const loggedInUser = await userModel.findOne({_id:req.user.id})
+  const newPlaylist = await playlistModel.create({
+    name:'New playlist'
+  })
+  await loggedInUser.playlists.push(newPlaylist._id)
+  await loggedInUser.save()
+  res.redirect('/home')
+})
+
+router.get('/deletePlaylist/:playlistId',async(req,res)=>{
+  const loggedInUser = await userModel.findOne({_id:req.user.id})
+  await playlistModel.findOneAndDelete({_id:req.params.playlistId})
+  const index = loggedInUser.playlists.indexOf(req.params.playlistId)
+  loggedInUser.playlists.splice(index,1)
+  await loggedInUser.save()
+  res.redirect('back')
+})
 
 
 

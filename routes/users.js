@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const plm = require('passport-local-mongoose')
+const playlist = require('./playlist')
 
 mongoose.connect('mongodb://0.0.0.0/spotifyClone')
 
@@ -11,7 +12,8 @@ const userSchema = mongoose.Schema({
     unique: true,
     required: true
   },
-  password:String
+  password:String,
+  playlists:[{type:mongoose.Schema.Types.ObjectId,ref:'Playlist'}]
 })
 
 userSchema.plugin(plm)
